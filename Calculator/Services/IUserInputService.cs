@@ -2,5 +2,8 @@ namespace Calculator.Services;
 
 public interface IUserInputService
 {
-    List<int> GetIntegers();
+    bool GetBoolean(string userPrompt);
+    int GetInteger(string userPrompt);
+    char GetChar(string userPrompt);
+    List<int> GetIntegers(string userInput, string alternativeDelimiter);
 }

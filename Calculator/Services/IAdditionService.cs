@@ -2,5 +2,5 @@ namespace Calculator.Services;
 
 public interface IAdditionService
 {
-    (List<int>, int) AddIntegers(List<int> addends);
+    (List<int>, int) AddIntegers(List<int> addends, bool allowNegativeNumbers, int maxAddend);
 }

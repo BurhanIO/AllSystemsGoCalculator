@@ -4,18 +4,17 @@ namespace Calculator.Services;
 
 public class AdditionService : IAdditionService
 {
-    private const int MaxAddend = 1000;
-    public (List<int>, int) AddIntegers(List<int> addends)
+    public (List<int>, int) AddIntegers(List<int> addends, bool allowNegativeNumbers, int maxAddend)
     {
         var negativeAddends = addends.Where(a => a < 0).ToList();
-        if (negativeAddends.Any())
+        if (!allowNegativeNumbers && negativeAddends.Count > 0)
         {
             throw new NegativeNumbersNotSupportedException($"Negative numbers are not supported. [{string.Join( ",", negativeAddends)}]");
         }
 
-        for (int i = 0; i < addends.Count; i++)
+        for (var i = 0; i < addends.Count; i++)
         {
-            if (addends[i] > MaxAddend)
+            if (addends[i] > maxAddend)
             {
                 addends[i] = 0;
             }

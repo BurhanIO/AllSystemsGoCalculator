@@ -9,8 +9,10 @@ public class UserInputService : IUserInputService
     private const string CustomDelimitersEndStr = "\\n";
     private const string SingleCustomDelimiterStartStr = "[";
     private const string SingleCustomDelimiterEndStr = "]";
+    private const string TrueString = "Y";
+    private const string FalseString = "N";
     
-    private string[] _integerDelimiters = [",", "\\n"];
+    private string[] _integerDelimiters = [","];
     
     private readonly IConsoleWrapper _consoleWrapper;
 
@@ -18,12 +20,78 @@ public class UserInputService : IUserInputService
     {
         _consoleWrapper = consoleWrapper;
     }
-    
-    public List<int> GetIntegers()
+
+    public bool GetBoolean(string userPrompt)
     {
+        bool? value = null;
+        do
+        {
+            var userInput= GetUserInput($"{userPrompt} (Y/N)");
+            
+            if (string.IsNullOrWhiteSpace(userInput))
+            {
+                continue;
+            }
+            if (userInput.Equals(TrueString, StringComparison.InvariantCultureIgnoreCase))
+            {
+                value = true;
+            }
+            if (userInput.Equals(FalseString, StringComparison.InvariantCultureIgnoreCase))
+            {
+                value = false;
+            }
+        } while (value == null);
+
+        return value.Value;
+    }
+
+    public int GetInteger(string userPrompt)
+    {
+        int? value = null;
+        do
+        {
+            var userInput= GetUserInput(userPrompt);
+            if (string.IsNullOrWhiteSpace(userInput))
+            {
+                continue;
+            }
+
+            if (int.TryParse(userInput, out var integer))
+            {
+                value = integer;
+            }
+        } while (value == null);
+
+        return value.Value;
+    }
+    
+    public char GetChar(string userPrompt)
+    {
+        char? value = null;
+        do
+        {
+            var userInput= GetUserInput(userPrompt);
+            if (string.IsNullOrWhiteSpace(userInput))
+            {
+                continue;
+            }
+
+            if (userInput.Length == 1)
+            {
+                value = userInput[0];
+            }
+        } while (value == null);
+
+        return value.Value;
+    }
+    
+    public List<int> GetIntegers(string userPrompt, string alternativeDelimiter = "\\n")
+    {
+        AddAlternativeDelimiter(alternativeDelimiter);
+        
         var integers = new List<int>();
         
-        var userInput = GetUserInput("Enter integers separated by a comma: ");
+        var userInput = GetUserInput(userPrompt);
         if (string.IsNullOrWhiteSpace(userInput))
         {
             return integers;
@@ -63,19 +131,28 @@ public class UserInputService : IUserInputService
     
     private void AddCustomDelimitersToList(string userInput)
     {
-        var delimiters = userInput.Substring(CustomDelimitersStartStr.Length, userInput.IndexOf(CustomDelimitersEndStr)-CustomDelimitersStartStr.Length);
+        var delimiters = userInput.Substring(
+            CustomDelimitersStartStr.Length,
+            userInput.IndexOf(CustomDelimitersEndStr)-CustomDelimitersStartStr.Length);
         if (delimiters.Length < 1)
         {
             throw new InvalidDelimiterException("No delimiters found.");
         }
 
-        var delimitersList = delimiters.Split([SingleCustomDelimiterStartStr, SingleCustomDelimiterEndStr], StringSplitOptions.RemoveEmptyEntries);
+        var delimitersList = delimiters.Split(
+            [SingleCustomDelimiterStartStr, SingleCustomDelimiterEndStr],
+            StringSplitOptions.RemoveEmptyEntries);
         if (delimitersList.Length < 1)
         {
             throw new InvalidDelimiterException("No delimiters found.");
         }
 
         _integerDelimiters = _integerDelimiters.Concat(delimitersList).ToArray();
+    }
+    
+    private void AddAlternativeDelimiter(string alternativeDelimiter)
+    {
+        _integerDelimiters = _integerDelimiters.Append(alternativeDelimiter).ToArray();
     }
     
     private string RemoveCustomDelimiters(string userInput)
