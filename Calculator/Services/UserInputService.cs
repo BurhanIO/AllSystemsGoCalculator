@@ -5,8 +5,8 @@ namespace Calculator.Services;
 
 public class UserInputService : IUserInputService
 {
-    private const string CustomDelimiterStartStr = "//";
-    private const string CustomDelimiterEndStr = "\\n";
+    private const string CustomDelimiterStartStr = "//[";
+    private const string CustomDelimiterEndStr = "]\\n";
     private string[] _integerDelimiters = [",", "\\n"];
     
     private readonly IConsoleWrapper _consoleWrapper;
@@ -60,17 +60,17 @@ public class UserInputService : IUserInputService
     
     private void AddCustomDelimiterToList(string userInput)
     {
-        var delimiter = userInput.Substring(2, userInput.IndexOf(CustomDelimiterEndStr)-2);
-        if (delimiter.Length != 1)
+        var delimiter = userInput.Substring(3, userInput.IndexOf(CustomDelimiterEndStr)-3);
+        if (delimiter.Length < 1)
         {
-            throw new InvalidDelimiterException("Invalid Delimiter. Only a single char delimiter is supported.");
+            throw new InvalidDelimiterException("Delimiter is empty.");
         }
         _integerDelimiters = _integerDelimiters.Append(delimiter).ToArray();
     }
     
     private string RemoveCustomDelimiter(string userInput)
     {
-        var delimiterEndStEnd = userInput.IndexOf(CustomDelimiterEndStr) + 2;
+        var delimiterEndStEnd = userInput.IndexOf(CustomDelimiterEndStr) + 3;
        return userInput.Substring(delimiterEndStEnd, userInput.Length-delimiterEndStEnd);
     }
 }

@@ -194,7 +194,7 @@ public sealed class UserInputServiceTests
     [TestMethod]
     public void GetIntegers_NumbersSeparatedByCustomDelimiter_ShouldReturnAllNumbersInTheList()
     {
-        var userInput = "//#\\n10#20#20";
+        var userInput = "//[###]\\n10###20###20";
         _mockConsoleWrapper.Setup(x => x.ReadLine()).Returns(userInput);
             
         var userInputService = CreateUserInputService();
@@ -208,28 +208,15 @@ public sealed class UserInputServiceTests
     }
     
     [TestMethod]
-    public void GetIntegers_CustomDelimiterIsMoreThanOneChar_ShouldThrowInvalidDelimiterException()
-    {
-        var userInput = "//##\\n10##20##20";
-        _mockConsoleWrapper.Setup(x => x.ReadLine()).Returns(userInput);
-            
-        var userInputService = CreateUserInputService();
-        
-        var result = () => userInputService.GetIntegers();
-        
-        result.Should().Throw<InvalidDelimiterException>().WithMessage("Invalid Delimiter. Only a single char delimiter is supported.");
-    }
-    
-    [TestMethod]
     public void GetIntegers_CustomDelimiterIsEmpty_ShouldThrowInvalidDelimiterException()
     {
-        var userInput = "//\\n102020";
+        var userInput = "//[]\\n102020";
         _mockConsoleWrapper.Setup(x => x.ReadLine()).Returns(userInput);
             
         var userInputService = CreateUserInputService();
         
         var result = () => userInputService.GetIntegers();
         
-        result.Should().Throw<InvalidDelimiterException>().WithMessage("Invalid Delimiter. Only a single char delimiter is supported.");
+        result.Should().Throw<InvalidDelimiterException>().WithMessage("Delimiter is empty.");
     }
 }
