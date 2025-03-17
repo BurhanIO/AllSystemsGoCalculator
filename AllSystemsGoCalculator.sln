@@ -1,0 +1,28 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{BC963DC9-5E1E-4102-833D-6C40442009E8}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorTests", "CalculatorTests\CalculatorTests.csproj", "{AA4E2F22-5F5D-42E3-9353-071C54819031}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator", "Calculator\Calculator.csproj", "{711F8CCC-BC75-4E60-BDA7-55671B9131BF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{711F8CCC-BC75-4E60-BDA7-55671B9131BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{711F8CCC-BC75-4E60-BDA7-55671B9131BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{711F8CCC-BC75-4E60-BDA7-55671B9131BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{711F8CCC-BC75-4E60-BDA7-55671B9131BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA4E2F22-5F5D-42E3-9353-071C54819031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA4E2F22-5F5D-42E3-9353-071C54819031}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+EndGlobal
