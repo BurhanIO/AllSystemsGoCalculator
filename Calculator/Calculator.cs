@@ -21,9 +21,9 @@ public class Calculator
 
     public void Run()
     {
-        var addends = _userInputService.GetIntegers();
-        var sum = _additionService.AddIntegers(addends);
+        var inputAddends = _userInputService.GetIntegers();
+        var (addends, sum) = _additionService.AddIntegers(inputAddends);
         
-        _consoleWrapper.WriteLine(sum);
+        _consoleWrapper.WriteLine($"{string.Join("+", addends)} = {sum}");
     }
 }

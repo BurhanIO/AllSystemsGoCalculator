@@ -2,5 +2,5 @@ namespace Calculator.Services;
 
 public interface IAdditionService
 {
-    int AddIntegers(List<int> addends);
+    (List<int>, int) AddIntegers(List<int> addends);
 }

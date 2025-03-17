@@ -5,7 +5,7 @@ namespace Calculator.Services;
 public class AdditionService : IAdditionService
 {
     private const int MaxAddend = 1000;
-    public int AddIntegers(List<int> addends)
+    public (List<int>, int) AddIntegers(List<int> addends)
     {
         var negativeAddends = addends.Where(a => a < 0).ToList();
         if (negativeAddends.Any())
@@ -13,13 +13,19 @@ public class AdditionService : IAdditionService
             throw new NegativeNumbersNotSupportedException($"Negative numbers are not supported. [{string.Join( ",", negativeAddends)}]");
         }
 
-        addends = addends.Where(a => a <= MaxAddend).ToList();
+        for (int i = 0; i < addends.Count; i++)
+        {
+            if (addends[i] > MaxAddend)
+            {
+                addends[i] = 0;
+            }
+        }
         
         return addends.Count switch
         {
-            0 => 0,
-            1 => addends[0],
-            _ => addends.Sum()
+            0 => (addends, 0),
+            1 => (addends, addends[0]),
+            _ => (addends, addends.Sum())
         };
     }
 }
