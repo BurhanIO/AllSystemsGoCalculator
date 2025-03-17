@@ -48,13 +48,13 @@ public sealed class AdditionServiceTests
     }
     
     [TestMethod]
-    public void AddIntegers_MoreThanTwoAddends_ShouldThrowArgumentOutOfRangeException()
+    public void AddIntegers_MoreThanTwoAddends_ShouldReturnTheSumOfAll()
     {
-        var addends = new List<int> {1,2,3};
+        var addends = new List<int>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11 ,12};
         var additionService = CreateAdditionService();
         
-        var result = () => additionService.AddIntegers(addends);
+        var result = additionService.AddIntegers(addends);
 
-        result.Should().Throw<ArgumentOutOfRangeException>().WithMessage("Only two addends are supported (Parameter 'addends')");
+        result.Should().Be(78);
     }
 }
