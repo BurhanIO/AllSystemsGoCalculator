@@ -1,10 +1,13 @@
+using Calculator.Exceptions;
 using Calculator.Utils;
 
 namespace Calculator.Services;
 
 public class UserInputService : IUserInputService
 {
-    private readonly string[] _listDelimiters = [",", "\\n"];
+    private const string CustomDelimiterStartStr = "//";
+    private const string CustomDelimiterEndStr = "\\n";
+    private string[] _integerDelimiters = [",", "\\n"];
     
     private readonly IConsoleWrapper _consoleWrapper;
 
@@ -23,6 +26,12 @@ public class UserInputService : IUserInputService
             return integers;
         }
 
+        if (HasCustomDelimiter(userInput))
+        {
+            AddCustomDelimiterToList(userInput);
+            userInput = RemoveCustomDelimiter(userInput);
+        }
+
         var inputList = SplitAndTrimUserInput(userInput);
         inputList.ForEach(input =>
         {
@@ -36,11 +45,32 @@ public class UserInputService : IUserInputService
     private string? GetUserInput(string userPrompt)
     {
         _consoleWrapper.WriteLine(userPrompt);
-        return _consoleWrapper.ReadLine();
+        return _consoleWrapper.ReadLine()?.Trim();
     }
 
     private List<string> SplitAndTrimUserInput(string userInput)
     {
-        return userInput.Split(_listDelimiters, StringSplitOptions.TrimEntries).ToList();
+        return userInput.Split(_integerDelimiters, StringSplitOptions.TrimEntries).ToList();
+    }
+
+    private bool HasCustomDelimiter(string userInput)
+    {
+        return userInput.StartsWith(CustomDelimiterStartStr) && userInput.Contains(CustomDelimiterEndStr);
+    }
+    
+    private void AddCustomDelimiterToList(string userInput)
+    {
+        var delimiter = userInput.Substring(2, userInput.IndexOf(CustomDelimiterEndStr)-2);
+        if (delimiter.Length != 1)
+        {
+            throw new InvalidDelimiterException("Invalid Delimiter. Only a single char delimiter is supported.");
+        }
+        _integerDelimiters = _integerDelimiters.Append(delimiter).ToArray();
+    }
+    
+    private string RemoveCustomDelimiter(string userInput)
+    {
+        var delimiterEndStEnd = userInput.IndexOf(CustomDelimiterEndStr) + 2;
+       return userInput.Substring(delimiterEndStEnd, userInput.Length-delimiterEndStEnd);
     }
 }

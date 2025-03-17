@@ -1,3 +1,4 @@
+using Calculator.Exceptions;
 using Calculator.Services;
 using Calculator.Utils;
 using FluentAssertions;
@@ -188,5 +189,47 @@ public sealed class UserInputServiceTests
         result[2].Should().Be(33);
         result[3].Should().Be(54);
         result[4].Should().Be(5);
+    }
+    
+    [TestMethod]
+    public void GetIntegers_NumbersSeparatedByCustomDelimiter_ShouldReturnAllNumbersInTheList()
+    {
+        var userInput = "//#\\n10#20#20";
+        _mockConsoleWrapper.Setup(x => x.ReadLine()).Returns(userInput);
+            
+        var userInputService = CreateUserInputService();
+        
+        var result = userInputService.GetIntegers();
+        
+        result.Count.Should().Be(3);
+        result[0].Should().Be(10);
+        result[1].Should().Be(20);
+        result[2].Should().Be(20);
+    }
+    
+    [TestMethod]
+    public void GetIntegers_CustomDelimiterIsMoreThanOneChar_ShouldThrowInvalidDelimiterException()
+    {
+        var userInput = "//##\\n10##20##20";
+        _mockConsoleWrapper.Setup(x => x.ReadLine()).Returns(userInput);
+            
+        var userInputService = CreateUserInputService();
+        
+        var result = () => userInputService.GetIntegers();
+        
+        result.Should().Throw<InvalidDelimiterException>().WithMessage("Invalid Delimiter. Only a single char delimiter is supported.");
+    }
+    
+    [TestMethod]
+    public void GetIntegers_CustomDelimiterIsEmpty_ShouldThrowInvalidDelimiterException()
+    {
+        var userInput = "//\\n102020";
+        _mockConsoleWrapper.Setup(x => x.ReadLine()).Returns(userInput);
+            
+        var userInputService = CreateUserInputService();
+        
+        var result = () => userInputService.GetIntegers();
+        
+        result.Should().Throw<InvalidDelimiterException>().WithMessage("Invalid Delimiter. Only a single char delimiter is supported.");
     }
 }
