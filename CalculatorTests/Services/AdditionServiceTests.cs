@@ -1,3 +1,4 @@
+using Calculator.Exceptions;
 using Calculator.Services;
 using FluentAssertions;
 
@@ -56,5 +57,16 @@ public sealed class AdditionServiceTests
         var result = additionService.AddIntegers(addends);
 
         result.Should().Be(78);
+    }
+    
+    [TestMethod]
+    public void AddIntegers_NegativeNumbersInList_ShouldthrowANegativeNumbersNotSupportedException()
+    {
+        var addends = new List<int> {1,-2,-3};
+        var additionService = CreateAdditionService();
+         
+        var result = () => additionService.AddIntegers(addends);
+ 
+        result.Should().Throw<NegativeNumbersNotSupportedException>().WithMessage("Negative numbers are not supported. [-2,-3]");
     }
 }
