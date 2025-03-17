@@ -4,7 +4,7 @@ namespace Calculator.Services;
 
 public class UserInputService : IUserInputService
 {
-    private const char ListDelimiter = ',';
+    private readonly string[] _listDelimiters = [",", "\\n"];
     
     private readonly IConsoleWrapper _consoleWrapper;
 
@@ -39,8 +39,8 @@ public class UserInputService : IUserInputService
         return _consoleWrapper.ReadLine();
     }
 
-    private static List<string> SplitAndTrimUserInput(string userInput)
+    private List<string> SplitAndTrimUserInput(string userInput)
     {
-        return userInput.Split(ListDelimiter).Select(a => a.Trim()).ToList();
+        return userInput.Split(_listDelimiters, StringSplitOptions.TrimEntries).ToList();
     }
 }

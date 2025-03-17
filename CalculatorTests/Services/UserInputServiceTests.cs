@@ -153,4 +153,40 @@ public sealed class UserInputServiceTests
         result[3].Should().Be(54);
         result[4].Should().Be(5);
     }
+    
+    [TestMethod]
+    public void GetIntegers_FiveNumbersSeparatedByANewLineChar_ShouldReturnAllNumbersInTheList()
+    {
+        var userInput = "10\\n20\\n33\\n54\\n5";
+        _mockConsoleWrapper.Setup(x => x.ReadLine()).Returns(userInput);
+            
+        var userInputService = CreateUserInputService();
+        
+        var result = userInputService.GetIntegers();
+        
+        result.Count.Should().Be(5);
+        result[0].Should().Be(10);
+        result[1].Should().Be(20);
+        result[2].Should().Be(33);
+        result[3].Should().Be(54);
+        result[4].Should().Be(5);
+    }
+    
+    [TestMethod]
+    public void GetIntegers_FiveNumbersSeparatedByANewLineCharsAComma_ShouldReturnAllNumbersInTheList()
+    {
+        var userInput = "10,20\\n33,54\\n5";
+        _mockConsoleWrapper.Setup(x => x.ReadLine()).Returns(userInput);
+            
+        var userInputService = CreateUserInputService();
+        
+        var result = userInputService.GetIntegers();
+        
+        result.Count.Should().Be(5);
+        result[0].Should().Be(10);
+        result[1].Should().Be(20);
+        result[2].Should().Be(33);
+        result[3].Should().Be(54);
+        result[4].Should().Be(5);
+    }
 }
