@@ -3,7 +3,7 @@ using Calculator.Utils;
 
 namespace Calculator;
 
-public class Calculator
+public class Calculator : ICalculator
 {
     private readonly IUserInputService _userInputService;
     private readonly IAdditionService _additionService;

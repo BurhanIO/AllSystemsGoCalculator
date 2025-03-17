@@ -1,5 +1,7 @@
 ﻿using Calculator.Services;
 using Calculator.Utils;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Calculator;
 
@@ -7,12 +9,14 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var consoleWrapper = new ConsoleWrapper();
-        var userInputService = new UserInputService(consoleWrapper);
-        var additionService = new AdditionService();
+        var serviceProvider = new ServiceCollection()
+            .AddSingleton<IConsoleWrapper, ConsoleWrapper>()
+            .AddSingleton<IUserInputService, UserInputService>()
+            .AddSingleton<IAdditionService, AdditionService>()
+            .AddSingleton<ICalculator, Calculator>()
+            .BuildServiceProvider();
         
-        var calculator = new Calculator(userInputService, additionService, consoleWrapper);
-        
-        calculator.Run();
+        var calculator = serviceProvider.GetService<ICalculator>();
+        calculator?.Run();
     }
 }
