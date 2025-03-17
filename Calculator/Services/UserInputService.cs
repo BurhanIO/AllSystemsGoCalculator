@@ -5,8 +5,11 @@ namespace Calculator.Services;
 
 public class UserInputService : IUserInputService
 {
-    private const string CustomDelimiterStartStr = "//[";
-    private const string CustomDelimiterEndStr = "]\\n";
+    private const string CustomDelimitersStartStr = "//";
+    private const string CustomDelimitersEndStr = "\\n";
+    private const string SingleCustomDelimiterStartStr = "[";
+    private const string SingleCustomDelimiterEndStr = "]";
+    
     private string[] _integerDelimiters = [",", "\\n"];
     
     private readonly IConsoleWrapper _consoleWrapper;
@@ -26,10 +29,10 @@ public class UserInputService : IUserInputService
             return integers;
         }
 
-        if (HasCustomDelimiter(userInput))
+        if (HasCustomDelimiters(userInput))
         {
-            AddCustomDelimiterToList(userInput);
-            userInput = RemoveCustomDelimiter(userInput);
+            AddCustomDelimitersToList(userInput);
+            userInput = RemoveCustomDelimiters(userInput);
         }
 
         var inputList = SplitAndTrimUserInput(userInput);
@@ -53,24 +56,31 @@ public class UserInputService : IUserInputService
         return userInput.Split(_integerDelimiters, StringSplitOptions.TrimEntries).ToList();
     }
 
-    private bool HasCustomDelimiter(string userInput)
+    private bool HasCustomDelimiters(string userInput)
     {
-        return userInput.StartsWith(CustomDelimiterStartStr) && userInput.Contains(CustomDelimiterEndStr);
+        return userInput.StartsWith(CustomDelimitersStartStr) && userInput.Contains(CustomDelimitersEndStr);
     }
     
-    private void AddCustomDelimiterToList(string userInput)
+    private void AddCustomDelimitersToList(string userInput)
     {
-        var delimiter = userInput.Substring(3, userInput.IndexOf(CustomDelimiterEndStr)-3);
-        if (delimiter.Length < 1)
+        var delimiters = userInput.Substring(CustomDelimitersStartStr.Length, userInput.IndexOf(CustomDelimitersEndStr)-CustomDelimitersStartStr.Length);
+        if (delimiters.Length < 1)
         {
-            throw new InvalidDelimiterException("Delimiter is empty.");
+            throw new InvalidDelimiterException("No delimiters found.");
         }
-        _integerDelimiters = _integerDelimiters.Append(delimiter).ToArray();
+
+        var delimitersList = delimiters.Split([SingleCustomDelimiterStartStr, SingleCustomDelimiterEndStr], StringSplitOptions.RemoveEmptyEntries);
+        if (delimitersList.Length < 1)
+        {
+            throw new InvalidDelimiterException("No delimiters found.");
+        }
+
+        _integerDelimiters = _integerDelimiters.Concat(delimitersList).ToArray();
     }
     
-    private string RemoveCustomDelimiter(string userInput)
+    private string RemoveCustomDelimiters(string userInput)
     {
-        var delimiterEndStEnd = userInput.IndexOf(CustomDelimiterEndStr) + 3;
+        var delimiterEndStEnd = userInput.IndexOf(CustomDelimitersEndStr) + CustomDelimitersEndStr.Length;
        return userInput.Substring(delimiterEndStEnd, userInput.Length-delimiterEndStEnd);
     }
 }

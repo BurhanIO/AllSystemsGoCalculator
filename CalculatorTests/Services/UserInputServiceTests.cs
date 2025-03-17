@@ -192,7 +192,7 @@ public sealed class UserInputServiceTests
     }
     
     [TestMethod]
-    public void GetIntegers_NumbersSeparatedByCustomDelimiter_ShouldReturnAllNumbersInTheList()
+    public void GetIntegers_NumbersSeparatedByOneCustomDelimiter_ShouldReturnAllNumbersInTheList()
     {
         var userInput = "//[###]\\n10###20###20";
         _mockConsoleWrapper.Setup(x => x.ReadLine()).Returns(userInput);
@@ -208,6 +208,24 @@ public sealed class UserInputServiceTests
     }
     
     [TestMethod]
+    public void GetIntegers_NumbersSeparatedByMultipleCustomDelimiter_ShouldReturnAllNumbersInTheList()
+    {
+        var userInput = "//[*][!!][r9r]\\n11r9r22*hh*33!!44";
+        _mockConsoleWrapper.Setup(x => x.ReadLine()).Returns(userInput);
+            
+        var userInputService = CreateUserInputService();
+        
+        var result = userInputService.GetIntegers();
+        
+        result.Count.Should().Be(5);
+        result[0].Should().Be(11);
+        result[1].Should().Be(22);
+        result[2].Should().Be(0);
+        result[3].Should().Be(33);
+        result[4].Should().Be(44);
+    }
+    
+    [TestMethod]
     public void GetIntegers_CustomDelimiterIsEmpty_ShouldThrowInvalidDelimiterException()
     {
         var userInput = "//[]\\n102020";
@@ -217,6 +235,6 @@ public sealed class UserInputServiceTests
         
         var result = () => userInputService.GetIntegers();
         
-        result.Should().Throw<InvalidDelimiterException>().WithMessage("Delimiter is empty.");
+        result.Should().Throw<InvalidDelimiterException>().WithMessage("No delimiters found.");
     }
 }
