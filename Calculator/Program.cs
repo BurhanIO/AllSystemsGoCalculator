@@ -1,4 +1,5 @@
 ﻿using Calculator.Services;
+using Calculator.Services.BasicMath;
 using Calculator.Utils;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +13,7 @@ public class Program
         var serviceProvider = new ServiceCollection()
             .AddSingleton<IConsoleWrapper, ConsoleWrapper>()
             .AddSingleton<IUserInputService, UserInputService>()
-            .AddSingleton<IAdditionService, AdditionService>()
+            .AddSingleton<IBasicMathService, BasicMathService>()
             .AddSingleton<ICalculator, Calculator>()
             .BuildServiceProvider();
         

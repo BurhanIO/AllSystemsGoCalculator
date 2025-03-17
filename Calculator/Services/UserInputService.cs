@@ -45,7 +45,7 @@ public class UserInputService : IUserInputService
         return value.Value;
     }
 
-    public int GetInteger(string userPrompt)
+    public double GetNumber(string userPrompt)
     {
         int? value = null;
         do
@@ -85,16 +85,16 @@ public class UserInputService : IUserInputService
         return value.Value;
     }
     
-    public List<int> GetIntegers(string userPrompt, string alternativeDelimiter = "\\n")
+    public List<double> GetNumbers(string userPrompt, string alternativeDelimiter = "\\n")
     {
         AddAlternativeDelimiter(alternativeDelimiter);
         
-        var integers = new List<int>();
+        var numbers = new List<double>();
         
         var userInput = GetUserInput(userPrompt);
         if (string.IsNullOrWhiteSpace(userInput))
         {
-            return integers;
+            return numbers;
         }
 
         if (HasCustomDelimiters(userInput))
@@ -106,11 +106,11 @@ public class UserInputService : IUserInputService
         var inputList = SplitAndTrimUserInput(userInput);
         inputList.ForEach(input =>
         {
-            int.TryParse(input, out var integer);
-            integers.Add(integer); 
+            double.TryParse(input, out var number);
+            numbers.Add(number); 
         });
         
-        return integers;
+        return numbers;
     }
     
     private string? GetUserInput(string userPrompt)
