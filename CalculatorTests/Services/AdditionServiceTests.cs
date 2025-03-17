@@ -60,6 +60,17 @@ public sealed class AdditionServiceTests
     }
     
     [TestMethod]
+    public void AddIntegers_AddendsGreaterThanOneThousandAreNotUsedInTheCalculation_ShouldReturnTheSumOfNumberNotOverOneThousand()
+    {
+        var addends = new List<int>{1, 2, 3, 1000, 1001, 20000};
+        var additionService = CreateAdditionService();
+        
+        var result = additionService.AddIntegers(addends);
+
+        result.Should().Be(1006);
+    }
+    
+    [TestMethod]
     public void AddIntegers_NegativeNumbersInList_ShouldthrowANegativeNumbersNotSupportedException()
     {
         var addends = new List<int> {1,-2,-3};
