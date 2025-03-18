@@ -45,9 +45,9 @@ public class UserInputService : IUserInputService
         return value.Value;
     }
 
-    public double GetNumber(string userPrompt)
+    public double GetNumber(string userPrompt, bool allowNegative = true)
     {
-        int? value = null;
+        double? value = null;
         do
         {
             var userInput= GetUserInput(userPrompt);
@@ -55,10 +55,13 @@ public class UserInputService : IUserInputService
             {
                 continue;
             }
-
-            if (int.TryParse(userInput, out var integer))
+            if (!double.TryParse(userInput, out var number))
             {
-                value = integer;
+                continue;
+            }
+            if (allowNegative || (!allowNegative && number >= 0))
+            {
+                value = number; 
             }
         } while (value == null);
 

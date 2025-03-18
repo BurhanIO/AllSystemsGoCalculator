@@ -7,11 +7,6 @@ public class ConsoleWrapper : IConsoleWrapper
         Console.WriteLine(value);
     }
     
-    public void WriteLine(int value)
-    {
-        Console.WriteLine(value);
-    }
-    
     public string? ReadLine()
     {
         return Console.ReadLine();

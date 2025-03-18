@@ -22,30 +22,52 @@ public class Calculator : ICalculator
     
     public void Run()
     {
+        var basicMathOptions = new BasicMathOptions();
+
         var alternativeDelimiter = _userInputService.GetChar("Enter an alternative delimiter: ");
-        var basicMathOptions = new BasicMathOptions
-        {
-            AllowNegativeNumbers = _userInputService.GetBoolean("Allow negative numbers?"),
-            MaxNumber = _userInputService.GetNumber("Max number?"),
-        };
+        basicMathOptions.AllowNegativeNumbers = _userInputService.GetBoolean("Allow negative numbers?");
+        basicMathOptions.MaxNumber = _userInputService.GetNumber(
+            $"Max number?{(basicMathOptions.AllowNegativeNumbers ? "" : " (Negatives not allowed)")}",
+            basicMathOptions.AllowNegativeNumbers
+        );
         
         while (true)
         {
-            var operationTypeInt = -1;
-            while (!Enum.IsDefined(typeof(MathOperationType), operationTypeInt))
+            try
             {
-                operationTypeInt = (int)_userInputService.GetNumber(
-                    "Operation type? (0 for Add, 1 for Subtract, 2 for Multiply, 3 for Divide)");   
+                var operationTypeInt = -1;
+                while (!Enum.IsDefined(typeof(MathOperationType), operationTypeInt))
+                {
+                    operationTypeInt = (int)_userInputService.GetNumber(
+                        "Operation type? (0 for Add, 1 for Subtract, 2 for Multiply, 3 for Divide)");
+                }
+
+                basicMathOptions.Operation = (MathOperationType)operationTypeInt;
+
+                var inputNumbers = _userInputService.GetNumbers(
+                    "Enter numbers and optionally delimiters: ",
+                    alternativeDelimiter.ToString());
+
+                var (numbers, sum) = _basicMathService.PerformOperation(inputNumbers, basicMathOptions);
+
+                _consoleWrapper.WriteLine($"{string.Join(GetOperationSymbol(basicMathOptions.Operation), numbers)} = {sum}");
             }
-            basicMathOptions.Operation = (MathOperationType)operationTypeInt;
-            
-            var inputNumbers = _userInputService.GetNumbers(
-                "Enter numbers and optionally delimiters: ",
-                alternativeDelimiter.ToString());
-            
-            var (numbers, sum) = _basicMathService.PerformOperation(inputNumbers, basicMathOptions);
-        
-            _consoleWrapper.WriteLine($"{string.Join("+", numbers)} = {sum}");   
+            catch(Exception e)
+            {
+                _consoleWrapper.WriteLine(e.Message);
+            }
         }
+    }
+
+    private static char GetOperationSymbol(MathOperationType mathOperationType)
+    {
+        return mathOperationType switch
+        {
+            MathOperationType.Addition => '+',
+            MathOperationType.Subtraction => '-',
+            MathOperationType.Multiplication => '*',
+            MathOperationType.Division => '/',
+            _ => '?'
+        };
     }
 }
